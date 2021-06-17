@@ -15,6 +15,7 @@ start:-
   def_instrumento,
   def_pecas,
   def_alarm,
+  def_Stock_Control,
   def_is_in_relation,
   def_is_a_relation,
   def_has_relation.
