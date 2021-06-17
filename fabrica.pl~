@@ -1,0 +1,7 @@
+
+def_fabrica:-
+    new_frame('fabrica'),
+    new_slot(fabrica,nome),
+    new_slot(fabrica,cidade),
+    new_slot(fabrica,cap_max),
+    new_slot(fabrica,total_produtos_stock).

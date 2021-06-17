@@ -1,0 +1,29 @@
+def_pecas:-
+    new_frame(pecas),
+    new_slot(pecas,nome),
+    new_slot(pecas,quantidade).
+
+
+
+gen_piece:-
+  write('Nome da peça:  '),
+  read(PieceName),
+
+  (not(frame_exists(PieceName)),
+
+  new_frame(PieceName),
+   new_slot(PieceName,is_a,pecas),
+
+  add_value(PieceName,nome,PieceName),
+    %new_slot(PieceName,is_in,NomeFab),
+
+  write('Stock: '),
+  read(Stock),
+  %new_slot(PieceName,quantidade,Stock).
+  add_value(PieceName,quantidade,Stock));
+
+  write('Peça já existente!').
+
+
+get_piece_stock(NomePeca,N):-
+  get_value(NomePeca,quantidade,N).

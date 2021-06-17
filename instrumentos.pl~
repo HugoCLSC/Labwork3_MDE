@@ -1,0 +1,95 @@
+%definição da fram instrumentos e tudfo o que tiver haver com esta frame.
+
+
+def_instrumento:-
+  new_frame(instrumento),
+  new_slot(instrumento,nome),
+  new_slot(instrumento,ref),
+  new_slot(instrumento,pecas),
+  new_slot(instrumento,quantidade).
+
+
+gen_Instrument(N):-
+
+   new_frame(N),
+  %new_slot(N,is_in),
+  new_slot(N,is_a,instrumento),
+ % new_slot(N,nome),
+  %new_slot(N,ref),
+  new_slot(N,data_fabrico),
+  new_slot(N,preco),
+  %new_slot(N,pecas),
+  %new_slot(N,quantidade),
+  new_demon(N,quantidade,update_stock,if_read,before,alter_value).
+
+%metodo que verifica se existem as peças necessárias para este instrumento.
+get_name(N):-
+  write('Introduza o nome do Instrumento: '),
+  read(N).
+
+
+
+
+new_Instrument:-
+  get_name(N),
+
+  (not(frame_exists(N)),
+
+   gen_Instrument(N),
+   write('Nome do instrumento'),
+   read(NomeIns),
+   add_value(N,nome,NomeIns),
+   write('Referência do Instrumento: '),
+   read(Ref),
+   add_value(N,ref,Ref),
+   get_date(D),
+   add_value(N,data_fabrico, D),
+   write('Preço do Produto: '),
+   read(Price),
+   add_value(N,preco,Price),
+   write('Quais são os materiais necessários? (Nome da peça e depois a quantidade. Escreva ok quando acabar): '),
+
+   readListUntil(Pecas,'ok'),
+   add_values(N,pecas,Pecas),
+
+   get_value(N,quantidade,_));
+
+  write('Instrumento j� existe!').
+
+/*
+*Demon executado quando se pretende ler o stock de um dado instrumento.
+*/
+update_stock(FactoryName,InstrumentName):-
+  get_values(N,pecas,Pecas),
+  findall((Name_Piece,Piece_Stock),get_list_piece_stock(Pecas,Name_Piece,Piece_Stock),AP),
+  findall((Name_Piece1,Real_Stock),process_stock_piece_list(AP,Pecas,Name_Piece1,Real_Stock),AP1),
+  minp(AP1,_,Stock),
+
+  add_value(InstrumentName,quantidade,Stock).
+
+/*
+* Obtém a Lista com o nome e a quantidade de peças necessárias para um dado instromento.
+*/
+get_list_piece_stock([(Piece_Name,_)|T],Piece_Name,Quantity):-
+  get_piece_stock(Piece_Name,Quantity),
+  get_list_piece_stock(T,Piece_Name,Quantity).
+/*
+ * Obtém a divisão entre o stock de cada peça existente com a quantidade de peças necessárias
+ * para um certo instrumento.
+ */
+process_stock_piece_list([(Piece_Name,Piece_Stock)|T],[(Piece_Name,Needed_Pieces)|T1], Piece_Name,Real_Stock ):-
+  Real_Stock is div(Piece_Stock,Needed_Pieces),
+  process_stock_piece_list(T,T1,Piece_Name, Real_Stock).
+
+
+
+
+%Get the minimum value
+
+minp([(P,D)],P,D).
+minp([(P,D)|R],P,D):-
+    minp(R,_,M),
+    D=<M.
+minp([(_,D)|R],P,M):-
+    minp(R,P,M),
+    D>M.
