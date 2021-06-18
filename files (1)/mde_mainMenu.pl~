@@ -1,0 +1,149 @@
+:-ensure_loaded(golog2_32).
+:-ensure_loaded(fabrica).
+:-ensure_loaded(instrumento).
+:-ensure_loaded(pecas).
+:-ensure_loaded(alarm).
+:-ensure_loaded(relations).
+
+cls :- write('\e[H\e[2J').
+
+is_enter_key(13).
+pause:-
+    get_single_char(C),
+    \+is_enter_key(C),
+    !.
+
+start:-
+  cls,
+  delete_kb,
+  def_fabrica,
+  def_instrumento,
+  def_pecas,
+  def_alarm,
+  def_is_in_relation,
+  def_is_a_relation,
+  def_has_relation,
+
+  menu_open.
+
+menu_open:-
+  %gerir produtos(Criar, visualizar, alterar e apagar produtos), gerir pecas (Criar, visualizar, alterar e apagar peças)
+  cls,
+  repeat,
+  nl,
+  write('-- Bem-vindo à APP da JALMúsica,Lda. --'),
+  nl,nl,
+  writeln('1 - Gerir fábrica'),
+  writeln('2 - Gerir instrumentos'),
+  writeln('3 - Gerir pecas'),
+  writeln('4 - Atribuir peças'),
+  writeln('5 - Listar produtos'),
+  writeln('6 - Listar produtos e suas características por ordem crescente'),
+  writeln('7 - Encomendar produto(s)'),
+  writeln('8 - Visualizar mensagens de alarme'),
+  writeln('9 - Requisito relevante'),
+  writeln('0 - Sair'),
+
+  write('Escolha uma opção: '),read(Opcao),
+
+  execute_optionMenuOpen(Opcao).
+
+execute_optionMenuOpen(Opcao):-
+
+  (Opcao =:= 1-> menu_fabrica;
+   Opcao =:= 2 -> menu_instrumentos;
+   Opcao =:= 3 -> menu_peca;
+   Opcao =:= 4 -> listar_instrumento;
+   Opcao =:= 5 -> list_alarms;
+   Opcao =:= 0 -> write('Obrigado pela visita à APP.'),!).
+
+%menu referente às operações realizadas nas fábricas
+menu_fabrica:-
+
+  cls,
+  nl,
+  repeat,
+  writeln('1- Configurar fabrica'),
+  writeln('2- Consultar parâmetros da fábrica'),
+  writeln('3- Alterar nome'),
+  writeln('4- Alterar localização'),
+  writeln('5- Alterar capacidade máxima de armazenamento de produtos'),
+
+  writeln('0- Back'),
+
+  nl,
+  write('Escolha uma opção '), read(Opcao),
+  nl,
+
+  execute_OptionMenuFabrica(Opcao),!.
+
+execute_OptionMenuFabrica(1):-settingsFactory,!.
+execute_OptionMenuFabrica(2):-consultFactory,!.
+execute_OptionMenuFabrica(3):-newNameFactory,!.
+execute_OptionMenuFabrica(4):-newLocalFactory,!.
+execute_OptionMenuFabrica(5):-newCapacityFactory,!.
+execute_OptionMenuFabrica(0):-menu_open,!.
+
+
+%menu referente às operações realizadas nas peças
+menu_peca:-
+  writeln('1- Adiciona pecas'),
+  writeln('2- Apagar pecas '),
+  writeln('3- Listar pecas '),
+  writeln('4- Alterar referencia'),
+  writeln('5- Alterar cor'),
+  writeln('5- Alterar quantidade'),
+
+  writeln('0- Back').
+
+%menu referente às operações realizadas nos produtos
+menu_instrumentos:-
+
+  cls,
+  writeln('1- Adicionar instrumento'),
+  writeln('2- Apagar produto '),
+  writeln('3- Listar produto '),
+  writeln('4- Alterar nome '),
+  writeln('5- Alterar Referencia '),
+  writeln('6- Alterar data de fabrico '),
+  writeln('7- Alterar preço '),
+  writeln('8- Alterar quantidade '),
+  writeln('9- Alterar peças '),
+
+  writeln('0- Back'),
+
+  nl,
+  write('Escolha uma opção '), read(Opcao),
+  nl,
+
+  execute_OptionMenuInstrumentos(Opcao),
+  Opcao =='0', !.
+
+execute_OptionMenuInstrumentos(1):-
+   new_Instrument,
+  !.
+
+
+%Method that gets the date we are currently on.
+%date(year,month,day,hour,minute,seconds,offset relative to ITC in seconds, Local timezone, true if daylight saving time applies to the current time)
+get_date(D):-
+    get_time(T),
+    stamp_date_time(T,D,'UTC').
+
+
+
+readListUntil(List,End):-
+    (readElement((E,N),End)-> List=[(E,N)|L1],
+        readListUntil(L1,End);
+        List=[]).
+
+readElement((E,N), End):-
+    read(E),
+    dif(E,End),
+    read(N).
+
+
+display_values_from_list([H|T]):-
+
+  write(H),nl,
+  display_values_from_list(T).

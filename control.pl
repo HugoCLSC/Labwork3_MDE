@@ -8,7 +8,7 @@ control_Instrument_Stock(Frame,Nome,Ref,Data_Fab,Preco,Pecas,Quantidade):-
   (Quantidade <= 5 ->
     produce_Instrument(Nome),
     get_date(D),
-    genmsg('Instrumento em pouca quantidade, fábrica a produzir',Quantidade,D);
+    genmsg(Nome+'Instrumento em pouca quantidade, fábrica a produzir',Quantidade,D);
     write('Produzido com sucesso!');
    Quantidade >5 -> !.
   );
@@ -63,3 +63,17 @@ control_Factory_Stock(F,Nome,_,Cap,Actual_Stock):-
   Difer is Cap - Actual_Stock,
   get_date(D),
   genmsg('A chegar ao limite de capacidade da fábrica', Difer, D).
+
+
+/****************
+*Mechanism to control the stock values of every piece.
+*****************
+* generates a message qhen a piece is running low, under 10
+*****************/
+
+control_piece_stock(F,Nome,Ref,Stock):-
+  (Stock <=10 ->
+    get_date(D),
+    genmsg('Stock menor que 10.', Nome,D);
+   Stock > 10 -> !
+  ).

@@ -198,6 +198,7 @@ minp([(_,D)|R],P,M):-
 
 /******************
 *Makes an Order of instruments.
+*******************
 * Given a order in the quantity "Quantity"
 * Checks if the factory can cover that quantity and then
 * If it has enought of that instrument, the Instrument stock and the factory stock is reduced;
